@@ -280,12 +280,41 @@ public class CPIT305_P extends JFrame {
         });
     }
 
+    private void viewTeams() {
+        System.out.println("View Teams clicked.");
+    }
+
+    private void showAddTeamForm() {
+        System.out.println("Add Team clicked.");
+    }
+
+    private void viewMatchResults() {
+        System.out.println("View Match Results clicked.");
+    }
+
+    private void scheduleMatch() {
+        System.out.println("Schedule Match clicked.");
+    }
+
     private VBox createSidebar() {
         VBox sidebar = new VBox(15);
         sidebar.setPadding(new Insets(20));
         sidebar.setStyle("-fx-background-color: rgba(179, 210, 150, 1); -fx-border-radius: 5px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);");
 
+        // زر Dashboard
         sidebar.getChildren().add(createSidebarButton("Dashboard", e -> showDashboard()));
+
+        // زر Teams
+        sidebar.getChildren().add(createSidebarButton("Teams", e -> viewTeams()));
+
+        // زر Add Team
+        sidebar.getChildren().add(createSidebarButton("Add Team", e -> showAddTeamForm()));
+
+        // زر Match Results
+        sidebar.getChildren().add(createSidebarButton("Match Results", e -> viewMatchResults()));
+
+        // زر Schedule Match
+        sidebar.getChildren().add(createSidebarButton("Schedule Match", e -> scheduleMatch()));
 
         return sidebar;
     }
