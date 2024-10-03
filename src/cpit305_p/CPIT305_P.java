@@ -2,6 +2,7 @@ package cpit305_p;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDate;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -13,6 +14,10 @@ import javafx.geometry.Pos;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 
 public class CPIT305_P extends JFrame {
 
@@ -238,7 +243,7 @@ public class CPIT305_P extends JFrame {
 
             // تحميل الصورة الخلفية
             Image bgImage = null;
-            try {
+            /*try {
                 bgImage = new Image(getClass().getResource("/2.png").toExternalForm());
             } catch (Exception e) {
                 System.out.println("Failed to load image: " + e.getMessage());
@@ -251,6 +256,7 @@ public class CPIT305_P extends JFrame {
                         new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false));
                 mainLayout.setBackground(new Background(backgroundImage));
             }
+             */
 
             // Sidebar
             VBox sidebar = createSidebar();
@@ -355,14 +361,204 @@ public class CPIT305_P extends JFrame {
 
     private void viewTeams() {
         System.out.println("View Teams clicked.");
+        Platform.runLater(() -> {
+            // Create a VBox to hold the team display
+            VBox teamLayout = new VBox(20);
+            teamLayout.setPadding(new Insets(20));
+            teamLayout.setAlignment(Pos.TOP_CENTER);
+
+            // Title for the section
+            javafx.scene.control.Label titleLabel = new javafx.scene.control.Label("Team List");
+            titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #a3c1a4;");
+
+            // Create the TableView and its columns
+            TableView<Team> teamTable = new TableView<>();
+            teamTable.setPrefSize(400, 400);
+
+            // Team Name Column
+            TableColumn<Team, String> nameColumn = new TableColumn<>("Team Name");
+            nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+            nameColumn.setPrefWidth(150);
+
+            // Coach Name Column
+            TableColumn<Team, String> coachColumn = new TableColumn<>("Coach Name");
+            coachColumn.setCellValueFactory(new PropertyValueFactory<>("coach"));
+            coachColumn.setPrefWidth(150);
+
+            // Number of Players Column
+            TableColumn<Team, Integer> playersColumn = new TableColumn<>("Players");
+            playersColumn.setCellValueFactory(new PropertyValueFactory<>("numberOfPlayers"));
+            playersColumn.setPrefWidth(150);
+
+            TableColumn<Team, String> SportsColumn = new TableColumn<>("Sport Type");
+            SportsColumn.setCellValueFactory(new PropertyValueFactory<>("SportType"));
+            SportsColumn.setPrefWidth(150);
+
+            // Add columns to the table
+            teamTable.getColumns().addAll(nameColumn, coachColumn, playersColumn, SportsColumn);
+
+            // Example teams (replace with actual data from your backend or database)
+            
+            teamLayout.getChildren().addAll(titleLabel, teamTable);
+
+            // Clear previous content and display the team list
+            resultArea.getChildren().clear();
+            resultArea.getChildren().add(teamLayout);
+        });
     }
 
     private void viewMatchResults() {
-        System.out.println("View Match Results clicked.");
+        Platform.runLater(() -> {
+            VBox matchResultsLayout = new VBox(10);
+            matchResultsLayout.setPadding(new Insets(20));
+            matchResultsLayout.setAlignment(Pos.TOP_CENTER);
+
+            // Title for the match history section
+            javafx.scene.control.Label titleLabel = new javafx.scene.control.Label("Match History");
+            titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #a3c1a4;");
+
+            // Add a graphical image to simulate the trophy or award icon
+            javafx.scene.image.ImageView awardIcon;
+
+            Image image = new Image("file:C:/Users/shouq/OneDrive/Documents/NetBeansProjects/CPIT-305_Project/src/cpit305_p/trophy.png");
+            awardIcon = new ImageView(image);
+            ;
+
+            awardIcon.setFitHeight(50);
+            awardIcon.setFitWidth(50);
+
+            // Horizontal box to align the title and the icon
+            HBox headerBox = new HBox(10);
+            headerBox.setAlignment(Pos.CENTER);
+            headerBox.getChildren().addAll(titleLabel, awardIcon);
+
+            // VBox to hold the list of match results
+            VBox matchList = new VBox(10);
+            matchList.setPadding(new Insets(10));
+            matchList.setStyle("-fx-background-color: rgba(255, 255, 255, 0.9); -fx-border-color: #BDC3C7; -fx-border-radius: 5px;");
+            matchList.setPrefHeight(400);
+
+            // Simulate match results (this is placeholder content, replace with actual data)
+            for (int i = 1; i <= 5; i++) {
+                // Create an individual match box (this is the "individual box" in your image)
+                VBox matchBox = new VBox(5);
+                matchBox.setStyle("-fx-background-color: rgba(240, 240, 240, 1); -fx-border-color: #BDC3C7; -fx-border-radius: 5px;");
+                matchBox.setPadding(new Insets(10));
+                matchBox.setAlignment(Pos.CENTER);
+
+                // Add content to the match box (match label as placeholder)
+                javafx.scene.control.Label matchLabel = new javafx.scene.control.Label("Match " + ": Team " + "\t\t\t" + "vs\t\t Team" + "\t\t\t" + " Result:  ");
+                matchLabel.setStyle("-fx-font-size: 16px;");
+
+                matchBox.getChildren().add(matchLabel);
+
+                // Add the individual match box to the match list
+                matchList.getChildren().add(matchBox);
+            }
+
+            // Clear previous content and add new content to the result area
+            resultArea.getChildren().clear();
+            resultArea.getChildren().addAll(headerBox, matchList);
+        });
     }
 
     private void scheduleMatch() {
-        System.out.println("Schedule Match clicked.");
+        Platform.runLater(() -> {
+            VBox scheduleMatchLayout = new VBox(20);
+            scheduleMatchLayout.setPadding(new Insets(30));
+            scheduleMatchLayout.setAlignment(Pos.TOP_CENTER);
+            scheduleMatchLayout.setStyle("-fx-background-color: #f7f7f7; -fx-border-color: #a3c1a4; -fx-border-radius: 10px; -fx-padding: 30px;");
+
+            // Title Label
+            javafx.scene.control.Label titleLabel = new javafx.scene.control.Label("Schedule a Match");
+            titleLabel.setStyle("-fx-font-size: 30px; -fx-text-fill: #a3c1a4; -fx-font-weight: bold;");
+
+            // Sport type input
+            javafx.scene.control.TextField sportTypeField = new javafx.scene.control.TextField();
+            sportTypeField.setPromptText("Enter Sport Type");
+            sportTypeField.setMaxWidth(300);
+            sportTypeField.setStyle("-fx-padding: 10px; -fx-background-color: #FFFFFF; -fx-border-color: #a3c1a4; -fx-border-radius: 5px;");
+
+            // Team selection ComboBox
+            ComboBox<String> team1ComboBox = new ComboBox<>();
+            ComboBox<String> team2ComboBox = new ComboBox<>();
+            team1ComboBox.getItems().addAll("Team A", "Team B", "Team C");
+            team2ComboBox.getItems().addAll("Team A", "Team B", "Team C");
+            team1ComboBox.setPromptText("Select Team 1");
+            team2ComboBox.setPromptText("Select Team 2");
+            team1ComboBox.setMaxWidth(300);
+            team2ComboBox.setMaxWidth(300);
+            team1ComboBox.setStyle("-fx-padding: 10px; -fx-background-color: #FFFFFF; -fx-border-color: #a3c1a4; -fx-border-radius: 5px;");
+            team2ComboBox.setStyle("-fx-padding: 10px; -fx-background-color: #FFFFFF; -fx-border-color: #a3c1a4; -fx-border-radius: 5px;");
+
+            // Date Picker for selecting match date
+            DatePicker datePicker = new DatePicker();
+            datePicker.setPromptText("Select Match Date");
+            datePicker.setMaxWidth(300);
+            datePicker.setStyle("-fx-padding: 10px; -fx-background-color: #FFFFFF; -fx-border-color: #a3c1a4; -fx-border-radius: 5px;");
+
+            // Time ComboBoxes for hours and minutes
+            ComboBox<Integer> hourComboBox = new ComboBox<>();
+            ComboBox<Integer> minuteComboBox = new ComboBox<>();
+
+            // Populate hours and minutes ComboBoxes
+            for (int i = 0; i < 24; i++) {
+                hourComboBox.getItems().add(i);  // Adds 0-23 for hours
+            }
+            for (int i = 0; i < 60; i += 5) {  // Adds 0, 5, 10, 15, ..., 55 for minutes
+                minuteComboBox.getItems().add(i);
+            }
+
+            hourComboBox.setPromptText("Hour");
+            minuteComboBox.setPromptText("Minute");
+            hourComboBox.setMaxWidth(140);
+            minuteComboBox.setMaxWidth(140);
+            hourComboBox.setStyle("-fx-padding: 10px; -fx-background-color: #FFFFFF; -fx-border-color: #a3c1a4; -fx-border-radius: 5px;");
+            minuteComboBox.setStyle("-fx-padding: 10px; -fx-background-color: #FFFFFF; -fx-border-color: #a3c1a4; -fx-border-radius: 5px;");
+
+            // Layout for hour and minute
+            HBox timeBox = new HBox(10);
+            timeBox.setAlignment(Pos.CENTER);
+            timeBox.getChildren().addAll(hourComboBox, minuteComboBox);
+
+            // Save Button
+            javafx.scene.control.Button saveButton = new javafx.scene.control.Button("Save Match Schedule");
+            saveButton.setStyle("-fx-background-color: #e9f5e9; -fx-text-fill: #5b8c5a; -fx-font-size: 16px; -fx-border-radius: 5px; -fx-padding: 10px;");
+            saveButton.setMaxWidth(200);
+
+            // Button action to save the schedule
+            saveButton.setOnAction(e -> {
+                String team1 = team1ComboBox.getValue();
+                String team2 = team2ComboBox.getValue();
+                LocalDate matchDate = datePicker.getValue();
+                Integer matchHour = hourComboBox.getValue();
+                Integer matchMinute = minuteComboBox.getValue();
+                String sportType = sportTypeField.getText();
+
+                if (team1 == null || team2 == null || matchDate == null || matchHour == null || matchMinute == null || sportType.isEmpty()) {
+                    showAlert("All fields must be filled out!");
+                } else {
+                    String matchTime = String.format("%02d:%02d", matchHour, matchMinute); // Format time as HH:mm
+                    System.out.println("Match scheduled: " + team1 + " vs " + team2 + " on " + matchDate + " at " + matchTime + " for " + sportType);
+                    showAlert("Match Scheduled Successfully!");
+
+                    // Clear form after saving
+                    team1ComboBox.setValue(null);
+                    team2ComboBox.setValue(null);
+                    datePicker.setValue(null);
+                    hourComboBox.setValue(null);
+                    minuteComboBox.setValue(null);
+                    sportTypeField.clear();
+                }
+            });
+
+            // Add elements to the layout
+            scheduleMatchLayout.getChildren().addAll(titleLabel, sportTypeField, team1ComboBox, team2ComboBox, datePicker, timeBox, saveButton);
+
+            // Clear previous content and display the schedule match form
+            resultArea.getChildren().clear();
+            resultArea.getChildren().add(scheduleMatchLayout);
+        });
     }
 
     private void showAlert(String message) {
