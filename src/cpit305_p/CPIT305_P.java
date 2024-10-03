@@ -2,11 +2,23 @@ package cpit305_p;
 
 import javax.swing.*;
 import java.awt.*;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.stage.Stage;
+
+import java.util.ArrayList;
 
 public class CPIT305_P extends JFrame {
 
     private JPanel mainPanel;
     private CardLayout cardLayout;
+    private JPanel dashboardPanel;
 
     public CPIT305_P() {
         // إعداد إطار النافذة
@@ -27,6 +39,10 @@ public class CPIT305_P extends JFrame {
 
         // إضافة شاشة التسجيل
         mainPanel.add(createSignupScreen(), "signupScreen");
+
+        // إضافة شاشة الداشبورد من الكود الثاني
+        dashboardPanel = new JPanel(new BorderLayout());
+        mainPanel.add(dashboardPanel, "dashboardScreen");
 
         // إضافة اللوحة الرئيسية إلى الإطار
         add(mainPanel);
@@ -125,6 +141,11 @@ public class CPIT305_P extends JFrame {
         loginBtn.setFont(new Font("Arial", Font.TYPE1_FONT, 16));
         loginBtn.setBackground(Color.getHSBColor(20, 100, 10));
         loginBtn.setBounds(150, 180, 100, 30);
+        loginBtn.addActionListener(e -> {
+            // عند الضغط على تسجيل الدخول نعرض صفحة الداشبورد
+            showDashboard();
+            cardLayout.show(mainPanel, "dashboardScreen");
+        });
 
         // إضافة العناصر إلى المربع الأبيض
         whitePanel.add(emailLabel);
@@ -204,6 +225,85 @@ public class CPIT305_P extends JFrame {
         return signupPanel;
     }
 
+    private void showDashboard() {
+        // إنشاء JFXPanel لتشغيل محتوى JavaFX في Swing
+        JFXPanel fxPanel = new JFXPanel();
+        dashboardPanel.add(fxPanel, BorderLayout.CENTER);
+
+        // إنشاء واجهة JavaFX
+        Platform.runLater(() -> {
+            BorderPane mainLayout = new BorderPane();
+
+            // محاولة تحميل الصورة
+            Image bgImage = null;
+            try {
+                bgImage = new Image(getClass().getResource("/2.png").toExternalForm());
+            } catch (Exception e) {
+                System.out.println("Failed to load image: " + e.getMessage());
+            }
+
+            // إذا تم تحميل الصورة بنجاح، تعيينها كخلفية
+            if (bgImage != null) {
+                BackgroundImage backgroundImage = new BackgroundImage(bgImage,
+                        BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+                        BackgroundPosition.DEFAULT,
+                        new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false));
+                mainLayout.setBackground(new Background(backgroundImage));
+            } else {
+                System.out.println("Image not found or failed to load.");
+            }
+
+            // Sidebar
+            VBox sidebar = createSidebar();
+            mainLayout.setLeft(sidebar);
+
+            // Center content
+            VBox mainContent = new VBox(10);
+            mainContent.setPadding(new Insets(20));
+            mainContent.setAlignment(Pos.TOP_CENTER);
+
+            javafx.scene.control.Label header = new javafx.scene.control.Label("Dashboard");
+            header.setStyle("-fx-font-size: 30px; -fx-text-fill: #a3c1a4; -fx-font-weight: bold;");
+            mainContent.getChildren().add(header);
+
+            VBox resultArea = new VBox();
+            resultArea.setPadding(new Insets(10));
+            resultArea.setStyle("-fx-background-color: rgba(255, 255, 255, 0.9); -fx-border-color: #BDC3C7; -fx-border-radius: 5px;");
+            resultArea.setPrefHeight(400);
+            mainContent.getChildren().add(resultArea);
+
+            mainLayout.setCenter(mainContent);
+
+            // Set up the scene
+            Scene scene = new Scene(mainLayout, 1000, 600);
+            fxPanel.setScene(scene);
+        });
+    }
+
+    private VBox createSidebar() {
+        VBox sidebar = new VBox(15);
+        sidebar.setPadding(new Insets(20));
+        sidebar.setStyle("-fx-background-color: rgba(179, 210, 150, 1); -fx-border-radius: 5px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);");
+
+        sidebar.getChildren().add(createSidebarButton("Dashboard", e -> showDashboard()));
+
+        return sidebar;
+    }
+
+    private javafx.scene.control.Button createSidebarButton(String text, javafx.event.EventHandler<javafx.event.ActionEvent> action) {
+        javafx.scene.control.Button button = new javafx.scene.control.Button(text);
+        button.setStyle("-fx-background-color: rgb(252, 244, 204); -fx-text-fill: #a3c1a4; -fx-font-size: 16px; -fx-padding: 10px; -fx-alignment: CENTER-LEFT; -fx-background-radius: 20px;");
+        button.setOnAction(action);
+        button.setPrefWidth(200);
+        button.setAlignment(Pos.CENTER_LEFT);
+
+        // Add hover effect
+        button.setOnMouseEntered(e -> button.setStyle("-fx-background-color: rgba(230, 230, 150, 1); -fx-text-fill: #a3c1a4; -fx-font-size: 16px; -fx-padding: 10px; -fx-alignment: CENTER-LEFT; -fx-background-radius: 20px;"));
+        button.setOnMouseExited(e -> button.setStyle("-fx-background-color: rgb(252, 244, 204); -fx-text-fill: #a3c1a4; -fx-font-size: 16px; -fx-padding: 10px; -fx-alignment: CENTER-LEFT; -fx-background-radius: 20px;"));
+
+        return button;
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             CPIT305_P gui = new CPIT305_P();
@@ -211,5 +311,3 @@ public class CPIT305_P extends JFrame {
         });
     }
 }
-
-
