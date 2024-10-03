@@ -225,6 +225,8 @@ public class CPIT305_P extends JFrame {
         return signupPanel;
     }
 
+    private VBox resultArea;  // قم بإضافة هذا المتغير إذا لم يكن موجودًا مسبقًا
+
     private void showDashboard() {
         // إنشاء JFXPanel لتشغيل محتوى JavaFX في Swing
         JFXPanel fxPanel = new JFXPanel();
@@ -234,7 +236,7 @@ public class CPIT305_P extends JFrame {
         Platform.runLater(() -> {
             BorderPane mainLayout = new BorderPane();
 
-            // محاولة تحميل الصورة
+            // تحميل الصورة الخلفية
             Image bgImage = null;
             try {
                 bgImage = new Image(getClass().getResource("/2.png").toExternalForm());
@@ -242,15 +244,12 @@ public class CPIT305_P extends JFrame {
                 System.out.println("Failed to load image: " + e.getMessage());
             }
 
-            // إذا تم تحميل الصورة بنجاح، تعيينها كخلفية
             if (bgImage != null) {
                 BackgroundImage backgroundImage = new BackgroundImage(bgImage,
                         BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                         BackgroundPosition.DEFAULT,
                         new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false));
                 mainLayout.setBackground(new Background(backgroundImage));
-            } else {
-                System.out.println("Image not found or failed to load.");
             }
 
             // Sidebar
@@ -266,7 +265,7 @@ public class CPIT305_P extends JFrame {
             header.setStyle("-fx-font-size: 30px; -fx-text-fill: #a3c1a4; -fx-font-weight: bold;");
             mainContent.getChildren().add(header);
 
-            VBox resultArea = new VBox();
+            resultArea = new VBox();  // إضافة منطقة عرض
             resultArea.setPadding(new Insets(10));
             resultArea.setStyle("-fx-background-color: rgba(255, 255, 255, 0.9); -fx-border-color: #BDC3C7; -fx-border-radius: 5px;");
             resultArea.setPrefHeight(400);
@@ -280,12 +279,82 @@ public class CPIT305_P extends JFrame {
         });
     }
 
-    private void viewTeams() {
-        System.out.println("View Teams clicked.");
+    private VBox createAddTeamForm() {
+        VBox form = new VBox(10);
+        form.setPadding(new Insets(20));
+        form.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #BDC3C7; -fx-border-radius: 5px; -fx-padding: 15px;");
+        form.setAlignment(Pos.CENTER); // Center all content in the VBox
+
+        javafx.scene.control.Label title = new javafx.scene.control.Label("Add Team");
+        title.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #a3c1a4;");
+        form.getChildren().add(title);
+
+        javafx.scene.control.TextField nameField = new javafx.scene.control.TextField();
+        nameField.setPromptText("Team Name");
+        nameField.setMaxWidth(300);
+
+        javafx.scene.control.TextField coachField = new javafx.scene.control.TextField();
+        coachField.setPromptText("Coach Name");
+        coachField.setMaxWidth(300);
+
+        javafx.scene.control.TextField playersField = new javafx.scene.control.TextField();
+        playersField.setPromptText("Number of Players");
+        playersField.setMaxWidth(300);
+
+        javafx.scene.control.TextField matchTypeField = new javafx.scene.control.TextField();
+        matchTypeField.setPromptText("Match Type");
+        matchTypeField.setMaxWidth(300);
+
+        javafx.scene.control.Button addButton = new javafx.scene.control.Button("Add Team");
+        addButton.setStyle("-fx-background-color: rgb(252, 244, 204); -fx-text-fill: #a3c1a4; -fx-font-size: 16px; -fx-padding: 10px; -fx-background-radius: 5px;");
+
+        // Center the button
+        addButton.setMaxWidth(150);
+        addButton.setAlignment(Pos.CENTER);
+
+        // Add action for the button
+        addButton.setOnAction(e -> {
+            String name = nameField.getText().trim();
+            String coach = coachField.getText().trim();
+            int numberOfPlayers;
+            try {
+                numberOfPlayers = Integer.parseInt(playersField.getText().trim());
+                if (numberOfPlayers <= 0) {
+                    throw new NumberFormatException();
+                }
+            } catch (NumberFormatException ex) {
+                showAlert("Invalid number of players!");
+                return;
+            }
+            String matchType = matchTypeField.getText().trim();
+
+            if (name.isEmpty() || coach.isEmpty() || matchType.isEmpty()) {
+                showAlert("All fields must be filled out!");
+                return;
+            }
+
+            // يمكن إضافة الفريق إلى القائمة هنا
+            System.out.println("Team added: " + name + " Coach: " + coach + " Players: " + numberOfPlayers + " Match Type: " + matchType);
+            nameField.clear();
+            coachField.clear();
+            playersField.clear();
+            matchTypeField.clear();
+        });
+
+        form.getChildren().addAll(nameField, coachField, playersField, matchTypeField, addButton);
+        return form;
     }
 
     private void showAddTeamForm() {
-        System.out.println("Add Team clicked.");
+        Platform.runLater(() -> {
+            VBox form = createAddTeamForm();  // إنشاء نموذج إضافة فريق
+            resultArea.getChildren().clear();  // مسح المحتويات الحالية
+            resultArea.getChildren().add(form);  // إضافة النموذج الجديد إلى منطقة العرض
+        });
+    }
+
+    private void viewTeams() {
+        System.out.println("View Teams clicked.");
     }
 
     private void viewMatchResults() {
@@ -296,24 +365,23 @@ public class CPIT305_P extends JFrame {
         System.out.println("Schedule Match clicked.");
     }
 
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     private VBox createSidebar() {
         VBox sidebar = new VBox(15);
         sidebar.setPadding(new Insets(20));
         sidebar.setStyle("-fx-background-color: rgba(179, 210, 150, 1); -fx-border-radius: 5px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 5);");
 
-        // زر Dashboard
         sidebar.getChildren().add(createSidebarButton("Dashboard", e -> showDashboard()));
-
-        // زر Teams
         sidebar.getChildren().add(createSidebarButton("Teams", e -> viewTeams()));
-
-        // زر Add Team
-        sidebar.getChildren().add(createSidebarButton("Add Team", e -> showAddTeamForm()));
-
-        // زر Match Results
+        sidebar.getChildren().add(createSidebarButton("Add Team", e -> showAddTeamForm()));  // هنا نضيف عرض الفورم
         sidebar.getChildren().add(createSidebarButton("Match Results", e -> viewMatchResults()));
-
-        // زر Schedule Match
         sidebar.getChildren().add(createSidebarButton("Schedule Match", e -> scheduleMatch()));
 
         return sidebar;
@@ -331,6 +399,27 @@ public class CPIT305_P extends JFrame {
         button.setOnMouseExited(e -> button.setStyle("-fx-background-color: rgb(252, 244, 204); -fx-text-fill: #a3c1a4; -fx-font-size: 16px; -fx-padding: 10px; -fx-alignment: CENTER-LEFT; -fx-background-radius: 20px;"));
 
         return button;
+    }
+
+    class Team {
+
+        private String name;
+        private String coach;
+        private int numberOfPlayers;
+        private String matchType;
+
+        public Team(String name, String coach, int numberOfPlayers, String matchType) {
+            this.name = name;
+            this.coach = coach;
+
+            this.numberOfPlayers = numberOfPlayers;
+            this.matchType = matchType;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("Name: %s, Coach: %s, Players: %d, Match Type: %s", name, coach, numberOfPlayers, matchType);
+        }
     }
 
     public static void main(String[] args) {
