@@ -350,7 +350,7 @@ public class CPIT305_P extends JFrame {
         matchTypeField.setMaxWidth(300);
 
         javafx.scene.control.Button addButton = new javafx.scene.control.Button("Add Team");
-        addButton.setStyle("-fx-background-color: rgb(252, 244, 204); -fx-text-fill: #a3c1a4; -fx-font-size: 16px; -fx-padding: 10px; -fx-background-radius: 5px;");
+        addButton.setStyle("-fx-background-color: #e9f5e9; -fx-text-fill: #4a4a4a; -fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 10px; -fx-background-radius: 5px;");
 
         addButton.setMaxWidth(150);
         addButton.setAlignment(Pos.CENTER);
