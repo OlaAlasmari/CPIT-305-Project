@@ -212,7 +212,6 @@ public class CPIT305_P extends JFrame {
     private VBox resultArea;
 
     private void showDashboard() {
-
         JFXPanel fxPanel = new JFXPanel();
         dashboardPanel.add(fxPanel, BorderLayout.CENTER);
 
@@ -220,7 +219,15 @@ public class CPIT305_P extends JFrame {
 
             BorderPane mainLayout = new BorderPane();
 
-            Image bgImage = null;
+            Image bgImage = new Image("2.png");
+
+            if (bgImage != null) {
+                BackgroundImage backgroundImage = new BackgroundImage(bgImage,
+                        BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+                        BackgroundPosition.CENTER,
+                        new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false));
+                mainLayout.setBackground(new Background(backgroundImage));
+            }
 
             VBox sidebar = createSidebar();
             mainLayout.setLeft(sidebar);
@@ -243,7 +250,6 @@ public class CPIT305_P extends JFrame {
 
             Scene scene = new Scene(mainLayout, 1000, 600);
             fxPanel.setScene(scene);
-
         });
     }
 
